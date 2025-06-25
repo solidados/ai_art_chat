@@ -1,40 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# ArtsMIA AI Collection Chat
+
+A conversational AI interface for exploring the Minneapolis Institute of Art's collection through natural language queries.
+
+## 🛠️ Technologies Used
+- **Framework**: Next.js 15.3.4
+- **Language**: TypeScript 5
+- **React**: v19
+- **Backend**: Node.js
+
+## 🔌 Key Libraries & Services
+- **Vector Database**: DataStax Astra (for storing and querying art embeddings)
+- **AI Model**: OpenAI (for natural language understanding and generation)
+- **Database Client**: Cassandra driver (for Astra DB connectivity)
+
+## 🌐 Data Source
+All artwork information is sourced from the [Minneapolis Institute of Art Collection dataset](https://github.com/artsmia/collection), made publicly available by the museum.
+
+## 🎨 About This Project
+This AI chat application allows art enthusiasts to:
+- Discover artworks from Mia's collection
+- Learn about artists and art movements
+- Get detailed information about specific pieces
+- Explore art history through conversational interface
+
+The application combines OpenAI's LLM technology with DataStax Astra vector database to provide accurate, context-aware responses about the museum's collection.
 
 ## Getting Started
+1. Clone this repository
+2. Install dependencies: `npm install`
+3. Run development server: `npm run dev`
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+*Note: This project is currently in early development (v0.1.0)*
