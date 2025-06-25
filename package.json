@@ -2,6 +2,13 @@
   "name": "artsmia_ai_collection",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "solidados"
+  },
+  "description": "A lightweight AI chatbot that fetches artwork details from the Mia Collection dataset. Built with Next.js, TypeScript, and Node.js, it lets users ask natural language questions about artists, styles, and artworks.",
+  "repository": {
+    "url": "https://github.com/solidados/ai_art_chat"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
