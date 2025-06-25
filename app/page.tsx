@@ -8,7 +8,7 @@ import Bubble from "@/app/api/components/Bubble";
 import LoadingBubble from "@/app/api/components/LoadingBubble";
 import PromptSuggestionsRow from "@/app/api/components/PromptSuggestionRow";
 
-import massArtLogo from "./assets/logo.png";
+import massArtLogo from "./assets/logo.svg";
 
 const Home = () => {
   const starterList: string[] = [
@@ -41,7 +41,7 @@ const Home = () => {
   return (
     <div>
       <main>
-        <Image src={massArtLogo} width={350} alt="MASS Art logo" />
+        <Image src={massArtLogo} width={250} alt="MASS Art logo" />
         <section className={noMessages ? "" : "populated"}>
           {noMessages ? (
             <>
@@ -54,15 +54,13 @@ const Home = () => {
                     <li key={index}>{listItem}</li>
                   ))}
                 </ul>
-                <p>
-                  <blockquote>
-                    &quot;Every artist was first an amateur&quot;
-                  </blockquote>{" "}
-                  — let&apos;s explore together!
-                </p>
-                <br />
-                <PromptSuggestionsRow onPromptClick={handlePrompt} />
               </div>
+              <p>
+                <i>&quot;Every artist was first an amateur&quot;</i> —
+                let&apos;s explore together!
+              </p>
+              <br />
+              <PromptSuggestionsRow onPromptClick={handlePrompt} />
             </>
           ) : (
             <>
