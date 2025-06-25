@@ -1,10 +1,10 @@
+// import fs from "node:fs/promises";
 import { DataAPIClient } from "@datastax/astra-db-ts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import OpenAI from "openai";
 
 import { config } from "dotenv";
-import fs from "node:fs/promises";
 config();
 
 interface ArtsmiaItem {
@@ -128,13 +128,15 @@ const splitPathsArrayIntoChunks = <T>(array: T[], chunkSize: number): T[][] => {
 };
 
 const loadSampleData = async () => {
-  const paths: string[] = await getGitHubJsonPaths();
+  const paths: string[] = (await getGitHubJsonPaths()).filter((p) =>
+    p.startsWith("objects/"),
+  );
   const collection = await db.collection(ASTRA_DB_COLLECTION);
 
   //* Batch size: 10 files at a time
   const batches = splitPathsArrayIntoChunks(paths, 10);
 
-  const sessionLogName = `embeddings-log-${Date.now()}.json`;
+  // const sessionLogName = `embeddings-log-${Date.now()}.json`;
 
   for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
     const batch = batches[batchIndex];
@@ -182,7 +184,7 @@ const loadSampleData = async () => {
           for (let j = 0; j < chunks.length; j += 1) {
             const chunk = chunks[j];
 
-            const exists = collection.findOne({ text: chunk });
+            const exists = await collection.findOne({ text: chunk });
             if (exists) {
               console.log(
                 `⚪️ [${j + 1}/${chunks.length}] ${path}: Already exists`,
@@ -198,35 +200,32 @@ const loadSampleData = async () => {
 
             const vector = embedding.data[0].embedding;
 
-            // if (!DRY_RUN) {
-            //   await collection.insertOne({
-            //     $vector: vector,
-            //     text: chunk,
-            //     source: url,
-            //     type: type,
-            //   });
-            //   console.log(`🟢 ${path} [${j + 1}/${chunks.length}]: Inserted`);
-            // } else {
-            //   console.log(`🧪 [DRY_RUN]: Would insert chunk from ${path}`);
-            // }
+            await collection.insertOne({
+              $vector: vector,
+              text: chunk,
+              source: url,
+              type: type,
+            });
+
+            console.log(`🟢 ${path} [${j + 1}/${chunks.length}]: Inserted`);
 
             //* This is to let a bit between requests to OpenAI:
             await new Promise((res) => setTimeout(res, 100));
 
             //* Embeddings Log keeper:
-            await fs.appendFile(
-              sessionLogName,
-              JSON.stringify(
-                {
-                  type,
-                  source: url,
-                  chunk,
-                  vector,
-                },
-                null,
-                2,
-              ) + ",\n",
-            );
+            // await fs.appendFile(
+            //   sessionLogName,
+            //   JSON.stringify(
+            //     {
+            //       type,
+            //       source: url,
+            //       chunk,
+            //       vector,
+            //     },
+            //     null,
+            //     2,
+            //   ) + ",\n",
+            // );
           }
         } catch (error) {
           if (error instanceof Error)
@@ -250,4 +249,31 @@ const loadSampleData = async () => {
   console.log("✅ All JSON data loaded into Astra DB.");
 };
 
-createCollection().then(() => loadSampleData());
+// createCollection().then(() => loadSampleData());
+(async () => {
+  const start = Date.now();
+
+  try {
+    const existingCollections = await db.listCollections();
+    const collectionNames = existingCollections.map((c) => c.name);
+
+    if (!collectionNames.includes(ASTRA_DB_COLLECTION!)) {
+      console.log(
+        `🆕 Collection "${ASTRA_DB_COLLECTION}" does not exist. Creating...`,
+      );
+      await createCollection();
+    } else {
+      console.log(
+        `ℹ️ Collection "${ASTRA_DB_COLLECTION}" already exists. Skipping creation.`,
+      );
+    }
+
+    await loadSampleData();
+  } catch (error) {
+    console.error("❌ Seeding error:", (error as Error).message);
+    process.exit(1);
+  }
+
+  const end = Date.now();
+  console.log(`✅ Done in ${((end - start) / 1000).toFixed(1)}s`);
+})();
